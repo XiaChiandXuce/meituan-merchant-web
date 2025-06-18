@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+// 不需要导入router-view，它是Vue Router的内置组件
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app-container">
+    <!-- 路由视图，用于显示当前路由匹配的组件 -->
+    <router-view />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>

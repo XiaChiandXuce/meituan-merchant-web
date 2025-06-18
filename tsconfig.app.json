@@ -3,7 +3,15 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 
-    /* Linting */
+    /* ---------- ① 路径别名 ---------- */
+    "baseUrl": ".",                   // 以项目根为起点
+    "paths": {
+      "@/*": ["src/*"]                // @ → src
+    },
+    /* ---------- ② 模块解析建议 ---------- */
+    "moduleResolution": "node",       // 保证走 Node 解析算法
+
+    /* Linting（保留原样） */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -11,5 +19,13 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+
+  /* ---------- ③ 把声明文件也放进来 ---------- */
+  "include": [
+    "vite-env.d.ts",          // Vite 自带，对 .vue 做了声明
+    "src/**/*.d.ts",          // 你手动写的 shims-vue.d.ts 也能被找到
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ]
 }

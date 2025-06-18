@@ -4,7 +4,6 @@
     "target": "ES2022",
     "lib": ["ES2023"],
     "module": "ESNext",
-    "skipLibCheck": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -13,7 +12,9 @@
     "moduleDetection": "force",
     "noEmit": true,
 
-    /* Linting */
+    /* 👉 加上 Node 类型声明 */
+    "types": ["node"],             // ← 新增
+    /* 下面这些严格模式可保持原样 */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
