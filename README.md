@@ -27,61 +27,113 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 ## **📌 项目结构**
 
 ```
-meituan-merchant-web/
-├── public/                  公共资源目录（图标、模板等）
+├── public/                          # 静态资源目录
 ├── src/
-│   ├── assets/              图片、字体资源
-│   ├── components/          公共 UI 组件（图表卡片、订单列表项等）
-│   ├── pages/               页面模块（dashboard, orders, products 等）
-│   │   ├── dashboard/       商家首页数据看板
-│   │   ├── orders/          订单管理模块
-│   │   ├── products/        商品管理与批量导入
-│   │   ├── analysis/        经营分析与漏斗图展示
-│   │   ├── reports/         报表导出功能
-│   │   └── settings/        门店设置与运营配置（预留）
-│   ├── router/              路由配置
-│   ├── store/               Pinia 状态管理
-│   ├── services/            接口 API 封装
-│   ├── utils/               通用工具函数（格式化、导出等）
-│   ├── App.vue              应用根组件
-│   └── main.ts              应用入口文件
-├── .env.development         开发环境配置
-├── .env.production          生产环境配置
-├── vite.config.ts           构建配置
-└── package.json             项目依赖与脚本定义
+│   ├── assets/                      # 图片、图标等资源
+│   ├── components/                 # 通用组件库（待扩展）
+│   ├── pages/                      # 页面视图组件（每个子模块一个目录）
+│   │   ├── analysis/               # 数据分析页面
+│   │   ├── customer/               # 顾客管理页面
+│   │   ├── dashboard/              # 商家数据看板
+│   │   │   └── index.vue
+│   │   ├── finance/                # 财务结算页面
+│   │   ├── home/                   # 商家首页
+│   │   │   └── index.vue
+│   │   ├── market/                 # 营销活动管理
+│   │   ├── orders/                 # 订单管理页面
+│   │   │   └── index.vue
+│   │   ├── products/               # 商品管理
+│   │   ├── reports/                # 经营报表
+│   │   ├── settings/               # 商家设置
+│   ├── router/                     # Vue Router 配置模块
+│   │   ├── modules/                # 路由模块化配置
+│   │   │   ├── analysis.ts
+│   │   │   ├── customer.ts
+│   │   │   ├── dashboard.ts
+│   │   │   ├── finance.ts
+│   │   │   ├── home.ts
+│   │   │   ├── market.ts
+│   │   │   ├── orders.ts
+│   │   │   ├── products.ts
+│   │   │   ├── report.ts
+│   │   │   ├── settiings.ts
+│   │   └── index.ts
+│   ├── store/                      # Pinia 状态管理
+│   │   └── user.ts
+│   ├── App.vue                     # 应用根组件
+│   ├── main.ts                     # 应用入口
+│   ├── style.css                   # 全局样式
+│   ├── vite-env.d.ts               # Vite 环境类型声明
+├── .env.development
+├── .env.production
+├── .gitignore
+├── index.html                      # 应用 HTML 模板
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+├── vite.config.ts                 # Vite 构建配置
+├── README.md
 ```
 
 ---
 
 ## **📌 系统功能模块**
 
-### ✅ 商家首页 Dashboard
+### ✅ 商家首页 `Home`
 
-* 显示今日订单、预计收入、评分、老客占比等核心指标
-* 昨日数据对比与行业排名
-* 消息中心推送：营销活动提醒、服务到期等
+- 显示今日订单、预计收入、评分、老客占比等核心指标
+- 支持昨日对比与行业平均数据趋势图
+- 嵌入式消息通知：营销提醒、服务到期、系统公告
 
-### ✅ 订单管理模块
+### ✅ 数据看板模块 `Dashboard`
 
-* 管理不同订单状态：待接单、待出餐、出餐异常、退款处理
-* 快速催单、异常上报、菜品换购、顾客退单处理
+- 汇总展示门店核心数据：实时订单、退款率、销售额趋势
+- 多维图表分析支持：条形图、折线图、饼图
+- 可自定义时间范围筛选、导出分析结果
 
-### ✅ 商品管理模块
+### ✅ 订单管理模块 `Orders`
 
-* 商品列表管理：编辑、上下架、标记推荐
-* 批量上传 Excel 模板，支持条码/无条码商品
-* 草稿商品支持字段缺失高亮与批量创建
+- 管理不同订单状态：待接单、已出餐、配送中、退款中
+- 支持异常订单上报、手动催单、退款处理流程
+- 菜品换购、手动结单、订单备注功能完善
 
-### ✅ 经营分析模块
+### ✅ 商品管理模块 `Products`
 
-* 展示近 30 日营业趋势、转化率、顾客流量
-* 使用漏斗图呈现浏览 → 下单 → 成交全流程
-* 支持时间选择与图表导出
+- 商品列表支持编辑、上下架、标记推荐、限时折扣设置
+- 支持 Excel 批量导入（条码/无条码）、字段校验
+- 草稿商品字段缺失高亮 + 快速补全表单
 
-### ✅ 报表导出中心
+### ✅ 顾客关系模块 `Customer`
 
-* 可按字段导出：订单数据、商品数据、粉丝数据等
-* 支持导出模板下载与 Excel 批量生成
+- 展示会员等级、消费次数、LTV 等客户价值指标
+- 支持搜索历史订单、客户标签分类管理
+- 可对单个顾客发起营销短信或优惠券推送
+
+### ✅ 营销活动模块 `Market`
+
+- 创建满减、折扣、买赠、限时秒杀等多种活动类型
+- 可设置活动范围（商品/分类/全部）、目标客户
+- 实时查看活动数据：浏览数、参与数、转化率
+
+### ✅ 财务结算模块 `Finance`
+
+- 展示订单收入、退款支出、佣金分成等财务明细
+- 支持周期选择与账户类型筛选
+- 可导出每月账单 Excel 报表
+
+### ✅ 报表中心 `Reports`
+
+- 导出订单/商品/用户/活动等多类数据
+- 支持字段选择 + 筛选条件配置
+- 支持表格预览、导出为 Excel 文件
+
+### ✅ 商家设置模块 `Settings`
+
+- 基本信息设置（门店名、电话、地址）
+- 营业时间设置、配送范围配置
+- 支持店铺 Logo 与首页宣传图自定义上传
 
 ---
 
