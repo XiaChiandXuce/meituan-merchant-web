@@ -6,6 +6,7 @@ import homeRoutes from './modules/home'
 import dashboardRoutes from './modules/dashboard'
 import ordersRoutes from './modules/orders'
 import productsRoutes from './modules/products'
+import analyticsRoutes from './modules/analytics'
 
 // 合并所有路由
 const routes: RouteRecordRaw[] = [
@@ -14,6 +15,7 @@ const routes: RouteRecordRaw[] = [
     ...dashboardRoutes,
     ...ordersRoutes,
     ...productsRoutes,
+    ...analyticsRoutes,
 ]
 
 const router = createRouter({

@@ -732,11 +732,9 @@ onMounted(() => {
 
 .products-container {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
   overflow-y: auto;
-  background: white;
-  margin: 0 16px 16px 16px;
-  border-radius: 8px;
+  background: #f5f5f5;
 }
 
 /* 页面标题 */
@@ -744,9 +742,11 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 24px;
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .page-title {
@@ -766,10 +766,11 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f8f9fa;
+  margin-bottom: 24px;
+  padding: 16px 24px;
+  background: white;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-left {
@@ -787,8 +788,11 @@ onMounted(() => {
 .product-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
-  padding: 0 16px;
+  margin-bottom: 24px;
+  padding: 16px 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
 }
 
@@ -831,11 +835,15 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-card {
-  background: white;
+  background: #f8f9fa;
   border: 1px solid #e8e8e8;
   border-radius: 8px;
   padding: 16px;
