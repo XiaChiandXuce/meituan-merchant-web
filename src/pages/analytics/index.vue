@@ -36,6 +36,9 @@ const chartData = ref({
   todayOrders: 528.73
 })
 
+// 历史数据时间段
+const historyPeriod = ref('近30日')
+
 // 左侧菜单数据
 const menuItems = ref([
   { icon: '📊', label: '商家首页', route: '/home' },
@@ -310,6 +313,172 @@ onMounted(() => {
               </el-radio-group>
             </div>
             <div id="revenueChart" class="chart"></div>
+          </div>
+        </div>
+
+        <!-- 历史数据概况 -->
+        <div class="history-section">
+          <div class="section-header">
+            <h2 class="section-title">历史数据概况</h2>
+            <div class="section-tabs">
+              <el-radio-group v-model="historyPeriod" size="small">
+                <el-radio-button value="昨日">昨日</el-radio-button>
+                <el-radio-button value="近7日">近7日</el-radio-button>
+                <el-radio-button value="近30日">近30日</el-radio-button>
+                <el-radio-button value="自定义">自定义</el-radio-button>
+                <el-radio-button value="按周">按周</el-radio-button>
+                <el-radio-button value="按月">按月</el-radio-button>
+              </el-radio-group>
+            </div>
+          </div>
+          
+          <div class="history-notice">
+            <el-alert
+              title="已选时间范围内，部分数据正在计算中，请稍后查看"
+              type="warning"
+              :closable="false"
+              show-icon>
+            </el-alert>
+            <p class="date-range">已选时间：2023-03-24 至 2023-04-22</p>
+          </div>
+
+          <div class="analysis-grid">
+            <!-- 营业分析 -->
+            <div class="analysis-card">
+              <div class="card-header">
+                <h3>营业分析</h3>
+                <el-button type="text" size="small">查看详情</el-button>
+              </div>
+              <p class="card-desc">收入 = 营业额 - 支出，点击"营业分析"可查看历史收入明细</p>
+              
+              <div class="metrics-row">
+                <div class="metric-item">
+                  <div class="metric-label">收入</div>
+                  <div class="metric-value">¥163,737<span class="unit">.29</span></div>
+                  <div class="metric-change positive">比前30日 +4,858.02</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-label">营业额</div>
+                  <div class="metric-value">¥384,464<span class="unit">.90</span></div>
+                  <div class="metric-change positive">比前30日 +1,297.44</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-label">支出</div>
+                  <div class="metric-value">¥220,727<span class="unit">.61</span></div>
+                  <div class="metric-change negative">比前30日 -6,155.46</div>
+                </div>
+              </div>
+
+              <div class="metrics-row">
+                <div class="metric-item">
+                  <div class="metric-label">有效订单</div>
+                  <div class="metric-value">9,768<span class="unit">单</span></div>
+                  <div class="metric-change positive">比前30日 +87</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-label">实付单均价</div>
+                  <div class="metric-value">¥26<span class="unit">.02</span></div>
+                  <div class="metric-change positive">比前30日 +0.11</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-label">活动补贴</div>
+                  <div class="metric-value">¥169,972<span class="unit">.97</span></div>
+                  <div class="metric-change negative">比前30日 -7,170.72</div>
+                </div>
+              </div>
+
+              <div class="promotion-notice">
+                <div class="notice-icon">🎯</div>
+                <div class="notice-content">
+                  <p>近30日您的流量表现低于平均水平，应用市场推广工具，了解更多营销数据，定位店铺瓶颈</p>
+                  <el-button type="primary" size="small">去试用</el-button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 流量分析 -->
+            <div class="analysis-card">
+              <div class="card-header">
+                <h3>流量分析</h3>
+                <div class="header-badges">
+                  <el-tag type="danger" size="small">曝光数据有异常</el-tag>
+                  <el-button type="text" size="small">查看详情</el-button>
+                </div>
+              </div>
+              <p class="card-desc">有效订单 = 曝光人数 × 人均转化率 × 下单转化率</p>
+              
+              <div class="metrics-row">
+                <div class="metric-item">
+                  <div class="metric-label">曝光人数</div>
+                  <div class="metric-value">--</div>
+                  <div class="metric-change">比前30日 --</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-label">人均转化率</div>
+                  <div class="metric-value">--</div>
+                  <div class="metric-change">比前30日 --</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-label">下单转化率</div>
+                  <div class="metric-value">--</div>
+                  <div class="metric-change">比前30日 --</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 顾客分析 -->
+          <div class="analysis-card full-width">
+            <div class="card-header">
+              <h3>顾客分析</h3>
+              <el-button type="text" size="small">查看详情</el-button>
+            </div>
+            <p class="card-desc">关注新老客户占比数据，提升下单频率</p>
+            
+            <div class="metrics-row">
+              <div class="metric-item">
+                <div class="metric-label">新客人数</div>
+                <div class="metric-value">0</div>
+                <div class="metric-change">比前30日持平</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">新客占比</div>
+                <div class="metric-value">0.0<span class="unit">%</span></div>
+                <div class="metric-change">比前30日持平</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">下单频率</div>
+                <div class="metric-value">0.00</div>
+                <div class="metric-change">比前30日持平</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 营销分析 -->
+          <div class="analysis-card full-width">
+            <div class="card-header">
+              <h3>营销分析</h3>
+              <el-button type="text" size="small">查看详情</el-button>
+            </div>
+            <p class="card-desc">查看营销活动对门店营业额的贡献，提升下单频率</p>
+            
+            <div class="metrics-row">
+              <div class="metric-item">
+                <div class="metric-label">活动订单</div>
+                <div class="metric-value">9,703</div>
+                <div class="metric-change positive">比前30日 +102</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">商家活动收益</div>
+                <div class="metric-value">¥152,317<span class="unit">.26</span></div>
+                <div class="metric-change positive">比前30日 +1,297.44</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">投入产出比</div>
+                <div class="metric-value">1.66</div>
+                <div class="metric-change positive">比前30日 +0.02</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -672,6 +841,158 @@ onMounted(() => {
 
 .chart {
   width: 100%;
-  height: 400px;
+  height: 300px;
+}
+
+/* 历史数据概况样式 */
+.history-section {
+  margin-top: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.section-tabs .el-radio-group {
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.history-notice {
+  margin-bottom: 20px;
+}
+
+.date-range {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.analysis-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.header-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.metrics-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.metrics-row:last-child {
+  margin-bottom: 0;
+}
+
+.metric-item {
+  flex: 1;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.metric-value .unit {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.metric-change {
+  font-size: 11px;
+  color: #666;
+}
+
+.metric-change.positive {
+  color: #67c23a;
+}
+
+.metric-change.negative {
+  color: #f56c6c;
+}
+
+.promotion-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 16px;
+}
+
+.notice-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.notice-content {
+  flex: 1;
+}
+
+.notice-content p {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
 }
 </style>
