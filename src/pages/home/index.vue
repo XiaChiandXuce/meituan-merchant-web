@@ -41,16 +41,19 @@ const messages = ref([
 // 左侧菜单数据
 const menuItems = ref([
   { icon: '📊', label: '商家首页', active: true, route: '/home' },
-  { icon: '📋', label: '订单管理', count: 15, route: '/orders' },
-  { icon: '🏪', label: '店铺管理', route: '/shop' },
-  { icon: '🍽️', label: '商品管理', count: 17, route: '/products' },
-  { icon: '👥', label: '客户管理', route: '/customers' },
-  { icon: '📈', label: '经营分析', route: '/analytics' },
-  { icon: '🎯', label: '营销中心', badge: '新', route: '/marketing' },
-  { icon: '💰', label: '财务中心', route: '/finance' },
-  { icon: '📊', label: '数据分析', route: '/data' },
-  { icon: '⚙️', label: '设置中心', route: '/settings' },
-  { icon: '🔔', label: '消息中心', count: 6, route: '/messages' }
+  { icon: '📋', label: '订单管理', count: 12, route: '/orders' },
+  { icon: '⏰', label: '待处理', count: 12, route: '/pending' },
+  { icon: '📜', label: '历史订单', route: '/history' },
+  { icon: '🏪', label: '商品管理', count: 1, route: '/products' },
+  { icon: '📦', label: '商品列表', route: '/product-list' },
+  { icon: '🛠️', label: '商品助手', count: 1, route: '/product-helper' },
+  { icon: '🔧', label: '规格管理', route: '/spec-management' },
+  { icon: '👥', label: '顾客管理', badge: '新', route: '/customers' },
+  { icon: '💰', label: '财务管理', route: '/finance' },
+  { icon: '📊', label: '经营分析', route: '/analytics' },
+  { icon: '📢', label: '门店推广', route: '/marketing' },
+  { icon: '🎯', label: '活动中心', badge: '新', route: '/activities' },
+  { icon: '⚙️', label: '向左收起', route: '/collapse' }
 ])
 
 // 初始化折线图
