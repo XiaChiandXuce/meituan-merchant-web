@@ -2,6 +2,10 @@
 import { ref, onMounted } from 'vue'
 import * as echarts from 'echarts'
 import { Bell, QuestionFilled, ArrowDown, Search } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+
+// 路由
+const router = useRouter()
 
 // 搜索关键词
 const searchKeyword = ref('')
@@ -36,17 +40,17 @@ const messages = ref([
 
 // 左侧菜单数据
 const menuItems = ref([
-  { icon: '📊', label: '数据概览', active: true },
-  { icon: '📋', label: '订单管理', count: 15 },
-  { icon: '🏪', label: '店铺管理' },
-  { icon: '🍽️', label: '商品管理', count: 17 },
-  { icon: '👥', label: '客户管理' },
-  { icon: '📈', label: '经营分析' },
-  { icon: '🎯', label: '营销中心', badge: '新' },
-  { icon: '💰', label: '财务中心' },
-  { icon: '📊', label: '数据分析' },
-  { icon: '⚙️', label: '设置中心' },
-  { icon: '🔔', label: '消息中心', count: 6 }
+  { icon: '📊', label: '商家首页', active: true, route: '/home' },
+  { icon: '📋', label: '订单管理', count: 15, route: '/orders' },
+  { icon: '🏪', label: '店铺管理', route: '/shop' },
+  { icon: '🍽️', label: '商品管理', count: 17, route: '/products' },
+  { icon: '👥', label: '客户管理', route: '/customers' },
+  { icon: '📈', label: '经营分析', route: '/analytics' },
+  { icon: '🎯', label: '营销中心', badge: '新', route: '/marketing' },
+  { icon: '💰', label: '财务中心', route: '/finance' },
+  { icon: '📊', label: '数据分析', route: '/data' },
+  { icon: '⚙️', label: '设置中心', route: '/settings' },
+  { icon: '🔔', label: '消息中心', count: 6, route: '/messages' }
 ])
 
 // 初始化折线图
@@ -97,6 +101,18 @@ const initLineChart = () => {
   window.addEventListener('resize', () => {
     myChart.resize()
   })
+}
+
+// 菜单点击处理
+const handleMenuClick = (item) => {
+  if (item.route) {
+    // 更新菜单激活状态
+    menuItems.value.forEach(menu => {
+      menu.active = menu.label === item.label
+    })
+    // 路由跳转
+    router.push(item.route)
+  }
 }
 
 onMounted(() => {
@@ -163,6 +179,7 @@ onMounted(() => {
             v-for="item in menuItems" 
             :key="item.label" 
             :class="['menu-item', { active: item.active }]"
+            @click="handleMenuClick(item)"
           >
             <span class="menu-icon">{{ item.icon }}</span>
             <span class="menu-label">{{ item.label }}</span>
@@ -411,15 +428,17 @@ onMounted(() => {
   display: flex;
   flex: 1;
   overflow: hidden;
+  margin-top: 16px;
 }
 
 /* 左侧导航 */
 .sidebar {
   width: 200px;
-  background: linear-gradient(180deg, #FFB800 0%, #FF8F00 100%);
-  color: white;
+  background: white;
+  color: #333;
   overflow-y: auto;
   flex-shrink: 0;
+  border-right: 1px solid #e8e8e8;
 }
 
 
@@ -438,12 +457,13 @@ onMounted(() => {
 }
 
 .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #f5f5f5;
 }
 
 .menu-item.active {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-right: 3px solid white;
+  background-color: #e6f7ff;
+  border-right: 3px solid #1890ff;
+  color: #1890ff;
 }
 
 .menu-icon {
