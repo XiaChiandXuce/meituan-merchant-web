@@ -5,6 +5,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import homeRoutes from './modules/home'
 import dashboardRoutes from './modules/dashboard'
 import ordersRoutes from './modules/orders'
+import productsRoutes from './modules/products'
 
 // 合并所有路由
 const routes: RouteRecordRaw[] = [
@@ -12,6 +13,7 @@ const routes: RouteRecordRaw[] = [
     ...homeRoutes,
     ...dashboardRoutes,
     ...ordersRoutes,
+    ...productsRoutes,
 ]
 
 const router = createRouter({

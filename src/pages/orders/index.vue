@@ -746,12 +746,11 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  padding: 12px 24px;
   background: #fff;
-  border-bottom: 1px solid #e4e7ed;
-  padding: 0 24px;
-  position: sticky;
-  top: 0;
+  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
   z-index: 1000;
 }
 
@@ -788,47 +787,75 @@ onMounted(() => {
   margin-right: 8px;
 }
 
+.search-input :deep(.el-input__wrapper) {
+  border-radius: 20px;
+  background: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s;
+}
+
+.search-input :deep(.el-input__wrapper:hover) {
+  border-color: #FFB800;
+  background: #fff;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  border-color: #FFB800;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 184, 0, 0.1);
+}
+
 .navbar-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 6px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s;
+  color: #666;
 }
 
 .navbar-item:hover {
-  background-color: #f5f7fa;
+  background: #f5f5f5;
+  color: #FFB800;
 }
 
 .navbar-text {
-  font-size: 12px;
-  color: #606266;
-  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.notification-badge {
-  margin-bottom: 2px;
+.notification-badge :deep(.el-badge__content) {
+  background: #ff4757;
+  border: none;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  cursor: pointer;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f8f9fa;
+  transition: all 0.3s;
+}
+
+.user-info:hover {
+  background: #e9ecef;
 }
 
 .user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  margin-right: 8px;
+  object-fit: cover;
 }
 
 .user-name {
   font-size: 14px;
-  color: #303133;
-  margin-right: 4px;
+  font-weight: 500;
+  color: #333;
 }
 
 /* 内容区域 */

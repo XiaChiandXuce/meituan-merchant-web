@@ -205,35 +205,44 @@ onMounted(() => {
     <!-- 顶部导航栏 -->
     <div class="top-navbar">
       <div class="navbar-left">
-        <div class="logo">
+        <div class="navbar-title">
           <span class="logo-icon">🍜</span>
-          <span class="logo-text">美团外卖·商家中心</span>
-        </div>
-      </div>
-      <div class="navbar-center">
-        <div class="search-box">
-          <el-input
-            v-model="searchKeyword"
-            placeholder="搜索商品名称、分类等"
-            :prefix-icon="Search"
-            @keyup.enter="handleSearch"
-            clearable
-          />
+          <span class="title-text">美团外卖·商家中心</span>
         </div>
       </div>
       <div class="navbar-right">
-        <div class="nav-item">
-          <el-icon><Bell /></el-icon>
-          <span>消息</span>
-          <el-badge :value="5" class="nav-badge" />
+        <el-input
+          v-model="searchKeyword"
+          placeholder="搜索商品、订单、客户"
+          prefix-icon="Search"
+          class="search-input"
+          clearable
+        />
+        <div class="navbar-item">
+          <el-badge :value="5" class="notification-badge">
+            <el-icon size="20"><Bell /></el-icon>
+          </el-badge>
+          <span class="navbar-text">消息</span>
         </div>
-        <div class="nav-item">
-          <el-icon><QuestionFilled /></el-icon>
-          <span>帮助</span>
+        <div class="navbar-item">
+          <el-icon size="20"><QuestionFilled /></el-icon>
+          <span class="navbar-text">帮助</span>
         </div>
-        <div class="nav-item user-info">
-          <span>商家账号</span>
-          <el-icon><ArrowDown /></el-icon>
+        <div class="navbar-item">
+          <el-dropdown>
+            <div class="user-info">
+              <img src="https://via.placeholder.com/32x32/409EFF/FFFFFF?text=商" alt="用户头像" class="user-avatar" />
+              <span class="user-name">商家账号</span>
+              <el-icon><ArrowDown /></el-icon>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item>账户设置</el-dropdown-item>
+                <el-dropdown-item divided>退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </div>
     </div>
@@ -499,26 +508,29 @@ onMounted(() => {
 
 /* 顶部导航栏 */
 .top-navbar {
-  height: 60px;
-  background: linear-gradient(90deg, #FFB800 0%, #FFA000 100%);
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
+  padding: 12px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
   z-index: 1000;
 }
 
 .navbar-left {
   display: flex;
   align-items: center;
+  flex: 1;
+  max-width: 600px;
+  gap: 20px;
 }
 
-.logo {
+.navbar-title {
   display: flex;
   align-items: center;
-  color: white;
-  font-weight: bold;
+  flex-shrink: 0;
 }
 
 .logo-icon {
@@ -526,51 +538,93 @@ onMounted(() => {
   margin-right: 8px;
 }
 
-.logo-text {
-  font-size: 16px;
+.title-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
 }
 
-.navbar-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  margin: 0 40px;
+.search-input {
+  width: 280px;
+  margin-right: 8px;
 }
 
-.search-box {
-  width: 400px;
+.search-input :deep(.el-input__wrapper) {
+  border-radius: 20px;
+  background: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s;
+}
+
+.search-input :deep(.el-input__wrapper:hover) {
+  border-color: #FFB800;
+  background: #fff;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  border-color: #FFB800;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 184, 0, 0.1);
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
-.nav-item {
+.navbar-item {
   display: flex;
   align-items: center;
-  color: white;
-  cursor: pointer;
+  gap: 6px;
   padding: 8px 12px;
-  border-radius: 4px;
+  border-radius: 6px;
+  cursor: pointer;
   transition: background-color 0.3s;
-  position: relative;
-}
-
-.nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.nav-item span {
-  margin-left: 4px;
+  color: #666;
   font-size: 14px;
 }
 
-.nav-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
+.navbar-item:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.navbar-text {
+  font-size: 14px;
+  color: #666;
+}
+
+.notification-badge {
+  margin-right: 4px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.user-info:hover {
+  background-color: #f5f5f5;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
 }
 
 /* 内容包装器 */
@@ -748,6 +802,7 @@ onMounted(() => {
   cursor: pointer;
   transition: all 0.3s;
   white-space: nowrap;
+  color: #333;
 }
 
 .tab-item:hover {
