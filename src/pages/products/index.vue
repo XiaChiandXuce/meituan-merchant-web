@@ -276,16 +276,13 @@ onMounted(() => {
              <span class="menu-count">1</span>
            </div>
            <div class="menu-item">
-             <span class="menu-icon">📦</span>
              <span class="menu-label">商品列表</span>
            </div>
            <div class="menu-item">
-             <span class="menu-icon">🛠️</span>
              <span class="menu-label">商品助手</span>
              <span class="menu-count">1</span>
            </div>
            <div class="menu-item">
-             <span class="menu-icon">🔧</span>
              <span class="menu-label">规格管理</span>
            </div>
            <div class="menu-item" @click="handleMenuClick('/customers')">

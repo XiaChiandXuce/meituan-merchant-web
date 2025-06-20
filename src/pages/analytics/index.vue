@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import * as echarts from 'echarts'
-import { Bell, QuestionFilled, ArrowDown, Search, TrendCharts, DataAnalysis, Monitor } from '@element-plus/icons-vue'
+import { Bell, QuestionFilled, ArrowDown, Search, TrendCharts, DataAnalysis, Monitor, ArrowRight } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 
 // 路由
@@ -41,27 +41,131 @@ const historyPeriod = ref('近30日')
 
 // 左侧菜单数据
 const menuItems = ref([
-  { icon: '📊', label: '商家首页', route: '/home' },
-  { icon: '📋', label: '订单管理', count: 12, route: '/orders' },
-  { icon: '⏰', label: '待处理', count: 12, route: '/pending' },
-  { icon: '📜', label: '历史订单', route: '/history' },
-  { icon: '🏪', label: '商品管理', count: 1, route: '/products' },
-  { icon: '📦', label: '商品列表', route: '/product-list' },
-  { icon: '🛠️', label: '商品助手', count: 1, route: '/product-helper' },
-  { icon: '🔧', label: '规格管理', route: '/spec-management' },
-  { icon: '👥', label: '顾客管理', route: '/customers' },
-  { icon: '💰', label: '财务管理', count: 1, route: '/finance' },
-  { icon: '📈', label: '经营分析', active: true, route: '/analytics' },
-  { icon: '🎯', label: '营销管理', route: '/marketing' },
-  { icon: '🏪', label: '门店管理', route: '/store' },
-  { icon: '⚙️', label: '设置', route: '/settings' }
+  {
+    id: 'home',
+    icon: '📊',
+    label: '商家首页',
+    path: '/home'
+  },
+  {
+    id: 'orders',
+    icon: '📋',
+    label: '订单管理',
+    count: 12,
+    isParent: true,
+    children: [
+      {
+        id: 'pending',
+        icon: '⏰',
+        label: '待处理',
+        count: 3,
+        path: '/orders/pending'
+      },
+      {
+        id: 'history',
+        icon: '📜',
+        label: '历史订单',
+        path: '/orders/history'
+      }
+    ]
+  },
+  {
+    id: 'products',
+    icon: '🏪',
+    label: '商品管理',
+    count: 1,
+    isParent: true,
+    children: [
+      {
+        id: 'product-list',
+        icon: '📦',
+        label: '商品列表',
+        path: '/products/list'
+      },
+      {
+        id: 'product-helper',
+        icon: '🛠️',
+        label: '商品助手',
+        count: 1,
+        path: '/products/helper'
+      },
+      {
+        id: 'spec-management',
+        icon: '🔧',
+        label: '规格管理',
+        path: '/products/spec'
+      }
+    ]
+  },
+  {
+    id: 'customers',
+    icon: '👥',
+    label: '顾客管理',
+    badge: '新',
+    path: '/customers'
+  },
+  {
+    id: 'finance',
+    icon: '💰',
+    label: '财务管理',
+    path: '/finance'
+  },
+  {
+    id: 'analytics',
+    icon: '📊',
+    label: '经营分析',
+    path: '/analytics'
+  },
+  {
+    id: 'marketing',
+    icon: '📢',
+    label: '门店推广',
+    path: '/marketing'
+  },
+  {
+    id: 'activities',
+    icon: '🎯',
+    label: '活动中心',
+    badge: '新',
+    path: '/activities'
+  },
+  {
+    id: 'settings',
+    icon: '⚙️',
+    label: '向左收起',
+    path: '/settings'
+  }
 ])
 
-// 跳转到指定页面
-const navigateTo = (route) => {
-  if (route) {
-    router.push(route)
+// 菜单折叠状态
+const menuCollapsed = ref({})
+
+// 菜单点击处理
+const handleMenuClick = (path) => {
+  if (path) {
+    router.push(path)
   }
+}
+
+// 切换菜单折叠状态
+const toggleMenu = (menuId) => {
+  menuCollapsed.value[menuId] = !menuCollapsed.value[menuId]
+}
+
+// 判断菜单是否展开
+const isMenuExpanded = (menuId) => {
+  return menuCollapsed.value[menuId] || false
+}
+
+// 判断当前页面
+const isCurrentPage = (path) => {
+  return router.currentRoute.value.path === path
+}
+
+// 判断父菜单是否包含当前页面
+const isParentActive = (menu) => {
+  if (!menu.children) return false
+  return menu.children.some(child => isCurrentPage(child.path))
 }
 
 // 初始化图表
@@ -141,6 +245,13 @@ const initChart = () => {
 
 // 组件挂载
 onMounted(() => {
+  // 初始化菜单状态
+  menuItems.value.forEach(menu => {
+    if (menu.isParent && isParentActive(menu)) {
+      menuCollapsed.value[menu.id] = true
+    }
+  })
+  
   console.log('经营分析页面已加载')
   setTimeout(() => {
     initChart()
@@ -200,16 +311,44 @@ onMounted(() => {
       <!-- 左侧导航菜单 -->
       <div class="sidebar">
         <div class="menu-list">
-          <div 
-            v-for="item in menuItems" 
-            :key="item.label"
-            :class="['menu-item', { active: item.active }]"
-            @click="navigateTo(item.route)"
-          >
-            <span class="menu-icon">{{ item.icon }}</span>
-            <span class="menu-label">{{ item.label }}</span>
-            <span v-if="item.count" class="menu-count">{{ item.count }}</span>
-          </div>
+          <template v-for="item in menuItems" :key="item.id">
+            <!-- 父级菜单 -->
+            <div v-if="item.isParent" :class="['menu-item', 'parent-menu', { active: isParentActive(item) }]">
+              <div class="menu-content" @click="toggleMenu(item.id)">
+                <span class="menu-icon">{{ item.icon }}</span>
+                <span class="menu-label">{{ item.label }}</span>
+                <span v-if="item.count" class="menu-count">{{ item.count }}</span>
+                <span v-if="item.badge" class="menu-badge">{{ item.badge }}</span>
+                <el-icon class="expand-icon" :class="{ 'expanded': isMenuExpanded(item.id) }">
+                  <ArrowRight />
+                </el-icon>
+              </div>
+              <!-- 子级菜单容器 -->
+              <div v-if="isMenuExpanded(item.id)" class="submenu-container">
+                <div 
+                  v-for="child in item.children" 
+                  :key="child.id"
+                  :class="['menu-item', 'child-menu', { active: isCurrentPage(child.path) }]"
+                  @click="handleMenuClick(child.path)"
+                >
+                  <div class="menu-content">
+                    <span class="menu-label">{{ child.label }}</span>
+                    <span v-if="child.count" class="menu-count">{{ child.count }}</span>
+                    <span v-if="child.badge" class="menu-badge">{{ child.badge }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 普通菜单项 -->
+            <div v-else :class="['menu-item', { active: isCurrentPage(item.path) }]" @click="handleMenuClick(item.path)">
+              <div class="menu-content">
+                <span class="menu-icon">{{ item.icon }}</span>
+                <span class="menu-label">{{ item.label }}</span>
+                <span v-if="item.count" class="menu-count">{{ item.count }}</span>
+                <span v-if="item.badge" class="menu-badge">{{ item.badge }}</span>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -638,22 +777,9 @@ onMounted(() => {
 }
 
 .menu-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
-}
-
-.menu-item:hover {
-  background-color: #f5f5f5;
-}
-
-.menu-item.active {
-  background-color: #e6f7ff;
-  border-right: 3px solid #1890ff;
-  color: #1890ff;
 }
 
 .menu-icon {
@@ -665,6 +791,7 @@ onMounted(() => {
 .menu-label {
   flex: 1;
   font-size: 14px;
+  text-align: left;
 }
 
 .menu-count {
@@ -675,6 +802,90 @@ onMounted(() => {
   font-size: 12px;
   min-width: 18px;
   text-align: center;
+}
+
+.menu-badge {
+  background: #67c23a;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+/* 菜单内容 */
+.menu-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-left: 3px solid transparent;
+  text-align: left;
+}
+
+.menu-item:hover .menu-content {
+  background-color: #f5f7fa;
+  color: #1890ff;
+}
+
+.menu-item.active .menu-content {
+  background-color: #e6f7ff;
+  border-left-color: #1890ff;
+  color: #1890ff;
+}
+
+/* 父级菜单样式 */
+.parent-menu .menu-label {
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+}
+
+.parent-menu.active .menu-content {
+  background-color: #e6f7ff;
+  border-left-color: #1890ff;
+  color: #1890ff;
+}
+
+/* 子级菜单容器 */
+.submenu-container {
+  background-color: #fafafa;
+  border-left: 3px solid #e8e8e8;
+}
+
+/* 子级菜单样式 */
+.child-menu .menu-content {
+  padding: 8px 16px 8px 44px;
+  border-left: none;
+  text-align: left;
+}
+
+.child-menu .menu-label {
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+}
+
+.child-menu:hover .menu-content {
+  background-color: #f0f0f0;
+  color: #1890ff;
+}
+
+.child-menu.active .menu-content {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border-left: 3px solid #1890ff;
+  margin-left: -3px;
+}
+
+/* 展开图标 */
+.expand-icon {
+  margin-left: auto;
+  transition: transform 0.3s;
+  font-size: 12px;
+}
+
+.expand-icon.expanded {
+  transform: rotate(90deg);
 }
 
 /* 主内容区域 */

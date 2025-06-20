@@ -1,5 +1,4 @@
-<script setup lang="ts">
-
+<script setup>
 import { ref, onMounted } from 'vue'
 import { Search, Filter, Refresh, Download, Bell, QuestionFilled, ArrowDown, Setting, Close, ArrowRight } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
@@ -101,21 +100,6 @@ const menuItems = ref([
 // 搜索关键词
 const searchKeyword = ref('')
 
-// 订单状态筛选
-const activeTab = ref('all')
-const orderTabs = ref([
-  { key: 'all', label: '全部订单', count: 156 },
-  { key: 'inProgress', label: '进行中', count: 8 },
-  { key: 'newOrder', label: '新订单', count: 12 },
-  { key: 'refund', label: '退单', count: 3 },
-  { key: 'compensation', label: '定则赔付', count: 2 },
-  { key: 'waitingMeal', label: '待出餐', count: 15 },
-  { key: 'mealException', label: '出餐异常', count: 4 },
-  { key: 'waitingDelivery', label: '待发配送', count: 6 },
-  { key: 'deliveryException', label: '配送异常', count: 5 },
-  { key: 'urge', label: '催单', count: 9 }
-])
-
 // 时间筛选
 const dateRange = ref('')
 const timeFilter = ref('today')
@@ -127,8 +111,8 @@ const timeOptions = [
   { value: 'custom', label: '自定义' }
 ]
 
-// 订单列表数据
-const orderList = ref([
+// 待处理订单列表数据
+const pendingOrders = ref([
   {
     id: '2024042200001',
     orderNo: '#397',
@@ -154,52 +138,52 @@ const orderList = ref([
     urgent: true
   },
   {
-    id: '2024042200002',
-    orderNo: '#396',
-    time: '04-22 09:08',
-    status: 'accepted',
-    statusText: '制作中',
-    statusColor: '#409EFF',
+    id: '2024042200004',
+    orderNo: '#394',
+    time: '04-22 09:15',
+    status: 'pending',
+    statusText: '待接单',
+    statusColor: '#E6A23C',
     customer: {
-      name: '李女士',
-      phone: '138****3272',
-      address: '长春市南关区人民大街1485号'
+      name: '刘女士',
+      phone: '139****2468',
+      address: '长春市绿园区西安大路1566号'
     },
     items: [
-      { name: '瘦肉粥', price: 16.0, quantity: 1 },
-      { name: '咸菜', price: 8.0, quantity: 1 }
+      { name: '小米粥', price: 15.0, quantity: 1 },
+      { name: '咸鸭蛋', price: 8.0, quantity: 2 }
     ],
-    totalAmount: 24.0,
+    totalAmount: 31.0,
     deliveryFee: 3.0,
-    actualAmount: 27.0,
+    actualAmount: 34.0,
     payMethod: '支付宝',
-    remark: '',
-    estimatedTime: '20分钟',
+    remark: '请送到门卫室',
+    estimatedTime: '30分钟',
     urgent: false
   },
   {
-    id: '2024042200003',
-    orderNo: '#395',
-    time: '04-22 08:45',
-    status: 'ready',
-    statusText: '待配送',
-    statusColor: '#67C23A',
+    id: '2024042200005',
+    orderNo: '#393',
+    time: '04-22 09:18',
+    status: 'pending',
+    statusText: '待接单',
+    statusColor: '#E6A23C',
     customer: {
-      name: '王先生',
-      phone: '159****7890',
-      address: '长春市宽城区北湖科技园'
+      name: '陈先生',
+      phone: '158****7531',
+      address: '长春市二道区东环城路8899号'
     },
     items: [
-      { name: '八宝粥', price: 20.0, quantity: 1 },
-      { name: '榨菜丝', price: 6.0, quantity: 2 }
+      { name: '瘦肉粥', price: 16.0, quantity: 2 },
+      { name: '榨菜丝', price: 6.0, quantity: 1 }
     ],
-    totalAmount: 32.0,
+    totalAmount: 38.0,
     deliveryFee: 4.0,
-    actualAmount: 36.0,
+    actualAmount: 42.0,
     payMethod: '微信支付',
-    remark: '请尽快配送',
-    estimatedTime: '已完成',
-    urgent: false
+    remark: '',
+    estimatedTime: '20分钟',
+    urgent: true
   }
 ])
 
@@ -209,24 +193,8 @@ const selectAll = ref(false)
 
 // 右侧设置面板
 const showSettingsPanel = ref(false)
-const settingsItems = ref([
-  { icon: '🔗', label: '微信接入公众号', status: '已接入', action: 'wechat' },
-  { icon: '🔊', label: '消息与铃声设置', action: 'notification' },
-  { icon: '⏰', label: '预订单设置', action: 'booking' },
-  { icon: '🚪', label: '门店承诺出餐时长设置', action: 'timing' }
-])
-
-const orderManagementItems = ref([
-  { icon: '📋', label: '订单模块功能介绍', badge: 'NEW', action: 'intro' },
-  { icon: '⚙️', label: '订单相关设置', action: 'settings' }
-])
 
 // 方法
-const handleTabChange = (tab) => {
-  activeTab.value = tab
-  // 这里可以添加筛选逻辑
-}
-
 const handleSearch = () => {
   ElMessage.success('搜索功能开发中')
 }
@@ -240,9 +208,11 @@ const handleExport = () => {
 }
 
 const handleAcceptOrder = (order) => {
-  order.status = 'accepted'
-  order.statusText = '制作中'
-  order.statusColor = '#409EFF'
+  // 从待处理列表中移除
+  const index = pendingOrders.value.findIndex(o => o.id === order.id)
+  if (index > -1) {
+    pendingOrders.value.splice(index, 1)
+  }
   ElMessage.success(`订单 ${order.orderNo} 已接单`)
 }
 
@@ -252,18 +222,13 @@ const handleRejectOrder = (order) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    order.status = 'cancelled'
-    order.statusText = '已取消'
-    order.statusColor = '#909399'
+    // 从待处理列表中移除
+    const index = pendingOrders.value.findIndex(o => o.id === order.id)
+    if (index > -1) {
+      pendingOrders.value.splice(index, 1)
+    }
     ElMessage.success('订单已拒绝')
   })
-}
-
-const handleOrderReady = (order) => {
-  order.status = 'ready'
-  order.statusText = '待配送'
-  order.statusColor = '#67C23A'
-  ElMessage.success(`订单 ${order.orderNo} 已完成制作`)
 }
 
 const handleViewDetail = (order) => {
@@ -272,33 +237,52 @@ const handleViewDetail = (order) => {
 
 const handleSelectAll = () => {
   if (selectAll.value) {
-    selectedOrders.value = orderList.value.map(order => order.id)
+    selectedOrders.value = pendingOrders.value.map(order => order.id)
   } else {
     selectedOrders.value = []
   }
 }
 
 const handleSelectionChange = () => {
-  selectAll.value = selectedOrders.value.length === orderList.value.length
+  selectAll.value = selectedOrders.value.length === pendingOrders.value.length
 }
 
-const getStatusActions = (order) => {
-  switch (order.status) {
-    case 'pending':
-      return [
-        { text: '接单', type: 'primary', action: () => handleAcceptOrder(order) },
-        { text: '拒绝', type: 'danger', action: () => handleRejectOrder(order) }
-      ]
-    case 'accepted':
-    case 'cooking':
-      return [
-        { text: '完成制作', type: 'success', action: () => handleOrderReady(order) }
-      ]
-    default:
-      return [
-        { text: '查看详情', type: 'info', action: () => handleViewDetail(order) }
-      ]
+const handleBatchAccept = () => {
+  if (selectedOrders.value.length === 0) {
+    ElMessage.warning('请先选择要操作的订单')
+    return
   }
+  
+  ElMessage.confirm(`确定要批量接单 ${selectedOrders.value.length} 个订单吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'info'
+  }).then(() => {
+    // 移除已选择的订单
+    pendingOrders.value = pendingOrders.value.filter(order => !selectedOrders.value.includes(order.id))
+    selectedOrders.value = []
+    selectAll.value = false
+    ElMessage.success('批量接单成功')
+  })
+}
+
+const handleBatchReject = () => {
+  if (selectedOrders.value.length === 0) {
+    ElMessage.warning('请先选择要操作的订单')
+    return
+  }
+  
+  ElMessage.confirm(`确定要批量拒绝 ${selectedOrders.value.length} 个订单吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    // 移除已选择的订单
+    pendingOrders.value = pendingOrders.value.filter(order => !selectedOrders.value.includes(order.id))
+    selectedOrders.value = []
+    selectAll.value = false
+    ElMessage.success('批量拒绝成功')
+  })
 }
 
 // 菜单点击处理
@@ -332,10 +316,6 @@ const isParentActive = (menuItem) => {
 // 设置面板处理
 const toggleSettingsPanel = () => {
   showSettingsPanel.value = !showSettingsPanel.value
-}
-
-const handleSettingsClick = (item) => {
-  ElMessage.info(`点击了${item.label}，功能开发中`)
 }
 
 onMounted(() => {
@@ -467,10 +447,11 @@ onMounted(() => {
           <el-icon><Setting /></el-icon>
           <span>设置</span>
         </div>
+        
         <div class="orders-container">
           <!-- 页面标题 -->
           <div class="page-header">
-            <h1 class="page-title">订单管理</h1>
+            <h1 class="page-title">待处理订单</h1>
             <div class="header-actions">
               <el-button :icon="Refresh" @click="handleRefresh">刷新</el-button>
               <el-button :icon="Download" @click="handleExport">导出</el-button>
@@ -510,19 +491,6 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- 订单状态标签 -->
-          <div class="order-tabs">
-            <div
-              v-for="tab in orderTabs"
-              :key="tab.key"
-              :class="['tab-item', { active: activeTab === tab.key }]"
-              @click="handleTabChange(tab.key)"
-            >
-              <span class="tab-label">{{ tab.label }}</span>
-              <span class="tab-count">{{ tab.count }}</span>
-            </div>
-          </div>
-
           <!-- 批量操作栏 -->
           <div class="batch-actions" v-if="selectedOrders.length > 0">
             <div class="batch-info">
@@ -530,14 +498,33 @@ onMounted(() => {
               <span class="selected-count">已选择 {{ selectedOrders.length }} 个订单</span>
             </div>
             <div class="batch-buttons">
-              <el-button size="small">批量接单</el-button>
-              <el-button size="small">批量导出</el-button>
+              <el-button type="primary" size="small" @click="handleBatchAccept">批量接单</el-button>
+              <el-button type="danger" size="small" @click="handleBatchReject">批量拒绝</el-button>
+              <el-button size="small" @click="handleExport">批量导出</el-button>
+            </div>
+          </div>
+
+          <!-- 待处理订单统计 -->
+          <div class="pending-stats">
+            <div class="stats-card">
+              <div class="stats-number">{{ pendingOrders.length }}</div>
+              <div class="stats-label">待处理订单</div>
+            </div>
+            <div class="stats-card urgent">
+              <div class="stats-number">{{ pendingOrders.filter(order => order.urgent).length }}</div>
+              <div class="stats-label">急单</div>
             </div>
           </div>
 
           <!-- 订单列表 -->
           <div class="order-list">
-            <div v-for="order in orderList" :key="order.id" class="order-card">
+            <div v-if="pendingOrders.length === 0" class="empty-state">
+              <div class="empty-icon">📋</div>
+              <div class="empty-text">暂无待处理订单</div>
+              <div class="empty-desc">所有订单都已处理完成</div>
+            </div>
+            
+            <div v-for="order in pendingOrders" :key="order.id" class="order-card pending-order">
               <div class="order-header">
                 <div class="order-left">
                   <el-checkbox
@@ -553,20 +540,14 @@ onMounted(() => {
                     </div>
                     <div class="order-status">
                       <el-tag :color="order.statusColor" effect="light">{{ order.statusText }}</el-tag>
-                      <span class="estimated-time" v-if="order.estimatedTime !== '已完成'">预计{{ order.estimatedTime }}</span>
+                      <span class="estimated-time">预计{{ order.estimatedTime }}</span>
                     </div>
                   </div>
                 </div>
                 <div class="order-actions">
-                  <el-button
-                    v-for="action in getStatusActions(order)"
-                    :key="action.text"
-                    :type="action.type"
-                    size="small"
-                    @click="action.action"
-                  >
-                    {{ action.text }}
-                  </el-button>
+                  <el-button type="primary" size="small" @click="handleAcceptOrder(order)">接单</el-button>
+                  <el-button type="danger" size="small" @click="handleRejectOrder(order)">拒绝</el-button>
+                  <el-button type="info" size="small" @click="handleViewDetail(order)">详情</el-button>
                 </div>
               </div>
 
@@ -616,73 +597,15 @@ onMounted(() => {
           </div>
 
           <!-- 分页 -->
-          <div class="pagination-wrapper">
+          <div class="pagination-wrapper" v-if="pendingOrders.length > 0">
             <el-pagination
               background
               layout="total, sizes, prev, pager, next, jumper"
-              :total="156"
+              :total="pendingOrders.length"
               :page-sizes="[10, 20, 50, 100]"
               :page-size="20"
               :current-page="1"
             />
-          </div>
-        </div>
-      </div>
-
-      <!-- 右侧设置面板 -->
-      <div class="settings-panel" :class="{ 'show': showSettingsPanel }">
-        <div class="panel-header">
-          <h3>订单相关设置</h3>
-          <el-button text @click="toggleSettingsPanel">
-            <el-icon><Close /></el-icon>
-          </el-button>
-        </div>
-        
-        <div class="panel-content">
-          <div class="settings-section">
-            <div class="section-title">设置 2 个预订单条达成时间，请注意查看</div>
-            <div class="section-subtitle">未再提醒</div>
-            
-            <div class="settings-list">
-              <div 
-                v-for="item in settingsItems" 
-                :key="item.action" 
-                class="settings-item"
-                @click="handleSettingsClick(item)"
-              >
-                <div class="item-left">
-                  <span class="item-icon">{{ item.icon }}</span>
-                  <span class="item-label">{{ item.label }}</span>
-                </div>
-                <div class="item-right">
-                  <span v-if="item.status" class="item-status">{{ item.status }}</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="settings-section">
-            <div class="section-title">高效使用订单管理</div>
-            
-            <div class="settings-list">
-              <div 
-                v-for="item in orderManagementItems" 
-                :key="item.action" 
-                class="settings-item"
-                @click="handleSettingsClick(item)"
-              >
-                <div class="item-left">
-                  <span class="item-icon">{{ item.icon }}</span>
-                  <span class="item-label">{{ item.label }}</span>
-                  <span v-if="item.badge" class="item-badge">{{ item.badge }}</span>
-                </div>
-                <div class="item-right">
-                  <span class="item-link">查看详情</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -699,170 +622,18 @@ onMounted(() => {
   background-color: #f5f5f5;
 }
 
-/* 设置面板切换按钮 */
-.settings-toggle {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  background: #ff6600;
-  color: white;
-  padding: 12px 8px;
-  border-radius: 6px 0 0 6px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  z-index: 1000;
-  transition: all 0.3s;
-}
-
-.settings-toggle:hover {
-  background: #e55a00;
-}
-
-/* 右侧设置面板 */
-.settings-panel {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  height: 100vh;
-  background: #fff;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
-  z-index: 999;
-  overflow-y: auto;
-}
-
-.settings-panel.show {
-  right: 0;
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e4e7ed;
-}
-
-.panel-header h3 {
-  margin: 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.panel-content {
-  padding: 20px;
-}
-
-.settings-section {
-  margin-bottom: 32px;
-}
-
-.section-title {
-  font-size: 14px;
-  color: #ff6600;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.section-subtitle {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 16px;
-}
-
-.settings-list {
-  background: #f8f9fa;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.settings-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #e4e7ed;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.settings-item:last-child {
-  border-bottom: none;
-}
-
-.settings-item:hover {
-  background: #f0f0f0;
-}
-
-.item-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.item-icon {
-  font-size: 16px;
-}
-
-.item-label {
-  font-size: 14px;
-  color: #333;
-}
-
-.item-badge {
-  background: #ff6600;
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 8px;
-}
-
-.item-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #999;
-}
-
-.item-status {
-  font-size: 12px;
-  color: #67c23a;
-}
-
-.item-link {
-  font-size: 12px;
-  color: #ff6600;
-}
-
-/* 调整主内容区域 */
-.main-content {
-  position: relative;
-  padding-right: 0;
-  transition: padding-right 0.3s;
-}
-
-.settings-panel.show ~ .main-content {
-  padding-right: 400px;
-}
-
 /* 顶部导航栏 */
 .top-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  flex-shrink: 0;
-  z-index: 1000;
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #e4e7ed;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar-left {
@@ -873,99 +644,61 @@ onMounted(() => {
 .navbar-title {
   display: flex;
   align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-  color: #303133;
+  gap: 8px;
 }
 
 .logo-icon {
   font-size: 24px;
-  margin-right: 8px;
 }
 
 .title-text {
-  color: #303133;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
 }
 
 .search-input {
-  width: 280px;
-  margin-right: 8px;
-}
-
-.search-input :deep(.el-input__wrapper) {
-  border-radius: 20px;
-  background: #f5f5f5;
-  border: 1px solid #e8e8e8;
-  transition: all 0.3s;
-}
-
-.search-input :deep(.el-input__wrapper:hover) {
-  border-color: #FFB800;
-  background: #fff;
-}
-
-.search-input :deep(.el-input__wrapper.is-focus) {
-  border-color: #FFB800;
-  background: #fff;
-  box-shadow: 0 0 0 2px rgba(255, 184, 0, 0.1);
+  width: 300px;
 }
 
 .navbar-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: all 0.3s;
   color: #666;
+  transition: color 0.3s;
 }
 
 .navbar-item:hover {
-  background: #f5f5f5;
-  color: #FFB800;
+  color: #409EFF;
 }
 
 .navbar-text {
   font-size: 14px;
-  font-weight: 500;
-}
-
-.notification-badge :deep(.el-badge__content) {
-  background: #ff4757;
-  border: none;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #f8f9fa;
-  transition: all 0.3s;
-}
-
-.user-info:hover {
-  background: #e9ecef;
+  cursor: pointer;
 }
 
 .user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  object-fit: cover;
 }
 
 .user-name {
   font-size: 14px;
-  font-weight: 500;
   color: #333;
 }
 
@@ -973,21 +706,19 @@ onMounted(() => {
 .content-wrapper {
   display: flex;
   flex: 1;
-  margin-top: 16px;
 }
 
-/* 左侧边栏 */
+/* 左侧导航菜单 */
 .sidebar {
   width: 200px;
   background: white;
-  color: #333;
-  overflow-y: auto;
-  flex-shrink: 0;
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid #e4e7ed;
+  padding: 16px 0;
 }
 
 .menu-list {
-  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-item {
@@ -1006,13 +737,13 @@ onMounted(() => {
 
 .menu-item:hover .menu-content {
   background-color: #f5f7fa;
-  color: #1890ff;
+  color: #409EFF;
 }
 
 .menu-item.active .menu-content {
-  background-color: #e6f7ff;
-  border-left-color: #1890ff;
-  color: #1890ff;
+  background-color: #ecf5ff;
+  border-left-color: #409EFF;
+  color: #409EFF;
 }
 
 /* 父级菜单样式 */
@@ -1023,9 +754,9 @@ onMounted(() => {
 }
 
 .parent-menu.active .menu-content {
-  background-color: #e6f7ff;
-  border-left-color: #1890ff;
-  color: #1890ff;
+  background-color: #ecf5ff;
+  border-left-color: #409EFF;
+  color: #409EFF;
 }
 
 /* 子级菜单容器 */
@@ -1049,13 +780,13 @@ onMounted(() => {
 
 .child-menu:hover .menu-content {
   background-color: #f0f0f0;
-  color: #1890ff;
+  color: #409EFF;
 }
 
 .child-menu.active .menu-content {
   background-color: #e6f7ff;
-  color: #1890ff;
-  border-left: 3px solid #1890ff;
+  color: #409EFF;
+  border-left: 3px solid #409EFF;
   margin-left: -3px;
 }
 
@@ -1106,11 +837,40 @@ onMounted(() => {
 /* 主内容区域 */
 .main-content {
   flex: 1;
-  overflow-y: auto;
+  padding: 24px;
+  position: relative;
 }
 
+/* 设置面板切换按钮 */
+.settings-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #ff6600;
+  color: white;
+  padding: 12px 8px;
+  border-radius: 6px 0 0 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  z-index: 99;
+  transition: all 0.3s;
+}
+
+.settings-toggle:hover {
+  background: #e55a00;
+}
+
+/* 订单容器 */
 .orders-container {
+  background: white;
+  border-radius: 8px;
   padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 页面标题 */
@@ -1119,12 +879,14 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e4e7ed;
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
-  color: #303133;
+  color: #333;
   margin: 0;
 }
 
@@ -1138,11 +900,10 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
-  padding: 16px 20px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
 }
 
 .filter-left {
@@ -1155,71 +916,16 @@ onMounted(() => {
   align-items: center;
 }
 
-/* 订单状态标签 */
-.order-tabs {
-  display: flex;
-  background: #fff;
-  border-radius: 8px;
-  padding: 4px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.tab-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.3s;
-  margin-right: 4px;
-  color: #333;
-}
-
-.tab-item:hover {
-  background-color: #f5f7fa;
-}
-
-.tab-item.active {
-  background-color: #409eff;
-  color: #fff;
-}
-
-.tab-label {
-  font-size: 14px;
-  margin-right: 8px;
-  color: inherit;
-}
-
-.tab-count {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: inherit;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  min-width: 18px;
-  text-align: center;
-}
-
-.tab-item.active .tab-count {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.tab-item:not(.active) .tab-count {
-  background-color: #f0f0f0;
-  color: #666;
-}
-
 /* 批量操作栏 */
 .batch-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 12px 16px;
   background: #e6f7ff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  margin-bottom: 16px;
   border: 1px solid #91d5ff;
+  border-radius: 6px;
+  margin-bottom: 16px;
 }
 
 .batch-info {
@@ -1229,13 +935,44 @@ onMounted(() => {
 }
 
 .selected-count {
-  color: #1890ff;
   font-size: 14px;
+  color: #666;
 }
 
 .batch-buttons {
   display: flex;
   gap: 8px;
+}
+
+/* 待处理订单统计 */
+.pending-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.stats-card.urgent {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stats-number {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.stats-label {
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 /* 订单列表 */
@@ -1245,24 +982,50 @@ onMounted(() => {
   gap: 16px;
 }
 
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-text {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.empty-desc {
+  font-size: 14px;
+  color: #999;
+}
+
+/* 订单卡片 */
 .order-card {
-  background: #fff;
+  border: 1px solid #e4e7ed;
   border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s;
+  background: white;
+  transition: all 0.3s;
 }
 
 .order-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pending-order {
+  border-left: 4px solid #E6A23C;
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
+  padding: 16px 20px;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -1281,29 +1044,30 @@ onMounted(() => {
 .order-number {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .order-no {
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
-  margin-right: 12px;
+  color: #333;
 }
 
 .order-time {
   font-size: 14px;
-  color: #909399;
+  color: #666;
 }
 
 .order-status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .estimated-time {
   font-size: 12px;
-  color: #e6a23c;
+  color: #E6A23C;
+  font-weight: 500;
 }
 
 .order-actions {
@@ -1312,6 +1076,7 @@ onMounted(() => {
 }
 
 .order-content {
+  padding: 20px;
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 24px;
@@ -1332,17 +1097,17 @@ onMounted(() => {
 .customer-name {
   font-size: 14px;
   font-weight: 600;
-  color: #303133;
+  color: #333;
 }
 
 .customer-contact {
-  font-size: 14px;
-  color: #606266;
+  font-size: 12px;
+  color: #666;
 }
 
 .customer-address {
   font-size: 12px;
-  color: #909399;
+  color: #666;
   line-height: 1.4;
 }
 
@@ -1368,32 +1133,33 @@ onMounted(() => {
 
 .item-name {
   flex: 1;
-  color: #303133;
+  color: #333;
 }
 
 .item-quantity {
-  color: #606266;
+  color: #666;
   margin: 0 12px;
 }
 
 .item-price {
   color: #f56c6c;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .order-remark {
-  background: #f8f9fa;
   padding: 8px 12px;
+  background: #f8f9fa;
   border-radius: 4px;
   font-size: 12px;
 }
 
 .remark-label {
-  color: #909399;
+  color: #666;
+  font-weight: 500;
 }
 
 .remark-text {
-  color: #606266;
+  color: #333;
 }
 
 /* 订单汇总 */
@@ -1419,11 +1185,11 @@ onMounted(() => {
 }
 
 .summary-label {
-  color: #606266;
+  color: #666;
 }
 
 .summary-value {
-  color: #303133;
+  color: #333;
 }
 
 .summary-row.total .summary-value {
@@ -1434,7 +1200,8 @@ onMounted(() => {
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
-  padding: 20px 0;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e4e7ed;
 }
 </style>

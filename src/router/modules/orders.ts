@@ -12,6 +12,16 @@ const ordersRoutes: RouteRecordRaw[] = [
             affix: false,
         },
     },
+    {
+        path: '/orders/pending',
+        name: 'ordersPending',
+        component: () => import('@/pages/orders/pending.vue'),
+        meta: {
+            title: '待处理订单',
+            icon: 'el-icon-time',
+            affix: false,
+        },
+    },
 ]
 
 export default ordersRoutes
