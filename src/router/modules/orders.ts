@@ -22,6 +22,16 @@ const ordersRoutes: RouteRecordRaw[] = [
             affix: false,
         },
     },
+    {
+        path: '/orders/history',
+        name: 'ordersHistory',
+        component: () => import('@/pages/orders/history.vue'),
+        meta: {
+            title: '历史订单',
+            icon: 'el-icon-document-copy',
+            affix: false,
+        },
+    },
 ]
 
 export default ordersRoutes
