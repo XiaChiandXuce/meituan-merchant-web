@@ -11,6 +11,16 @@ const productsRoutes: RouteRecordRaw[] = [
             affix: false,
         },
     },
+    {
+        path: '/products/list',
+        name: 'productsList',
+        component: () => import('@/pages/products/list.vue'),
+        meta: {
+            title: '商品列表',
+            icon: 'el-icon-goods',
+            affix: false,
+        },
+    },
 ]
 
 export default productsRoutes
