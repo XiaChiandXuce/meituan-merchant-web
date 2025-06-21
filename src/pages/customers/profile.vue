@@ -333,7 +333,9 @@ const searchKeyword = ref('')
 const dateRange = ref([])
 
 // 菜单折叠状态
-const menuCollapsed = ref({})
+const menuCollapsed = ref({
+  customers: true // 默认展开顾客管理菜单
+})
 
 
 
@@ -415,16 +417,10 @@ const menuItems = ref([
         path: '/customers/profile'
       },
       {
-        id: 'customer-list',
-        icon: '📋',
-        label: '顾客列表',
-        path: '/customers/list'
-      },
-      {
-        id: 'customer-tags',
-        icon: '🏷️',
-        label: '顾客标签',
-        path: '/customers/tags'
+        id: 'precision-marketing',
+        icon: '🎯',
+        label: '精准营销',
+        path: '/customers/precision-marketing'
       }
     ]
   },

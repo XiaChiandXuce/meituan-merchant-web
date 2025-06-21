@@ -24,6 +24,14 @@ const customersRoutes: RouteRecordRaw[] = [
     meta: {
       title: '顾客画像'
     }
+  },
+  {
+    path: '/customers/precision-marketing',
+    name: 'PrecisionMarketing',
+    component: () => import('../../pages/customers/precision-marketing.vue'),
+    meta: {
+      title: '精准营销'
+    }
   }
 ]
 
