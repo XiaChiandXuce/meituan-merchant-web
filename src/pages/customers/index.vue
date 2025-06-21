@@ -91,6 +91,12 @@ const menuItems = ref([
         icon: '🎯',
         label: '精准营销',
         path: '/customers/precision-marketing'
+      },
+      {
+        id: 'customer-reviews',
+        icon: '💬',
+        label: '顾客评价',
+        path: '/customers/reviews'
       }
     ]
   },

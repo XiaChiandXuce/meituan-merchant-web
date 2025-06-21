@@ -97,126 +97,66 @@
         <div class="page-header">
           <div class="header-left">
             <h1 class="page-title">精准营销</h1>
-            <p class="page-description">基于顾客数据分析，制定精准营销策略，提升转化率</p>
-          </div>
-          <div class="header-right">
-            <el-button type="primary" @click="createCampaign">
-              <el-icon><Plus /></el-icon>
-              创建营销活动
-            </el-button>
           </div>
         </div>
 
-        <!-- 营销概览 -->
-        <div class="overview-section">
-          <div class="overview-cards">
-            <div class="overview-card">
-              <div class="card-icon">📊</div>
-              <div class="card-content">
-                <div class="card-title">活跃营销活动</div>
-                <div class="card-value">{{ activeCampaigns }}</div>
-                <div class="card-trend positive">+12% 较上周</div>
+        <!-- 营销类型选择 -->
+        <div class="marketing-types">
+          <!-- 人群营销 -->
+          <div class="marketing-section">
+            <div class="section-header">
+              <div class="section-icon">👥</div>
+              <div class="section-info">
+                <h2 class="section-title">人群营销</h2>
+                <p class="section-desc">基于用户画像和行为数据，精准定位目标客户群体</p>
               </div>
+              <el-button type="primary" @click="createAudienceMarketing">
+                立即投放
+              </el-button>
             </div>
-            <div class="overview-card">
-              <div class="card-icon">🎯</div>
-              <div class="card-content">
-                <div class="card-title">目标客户数</div>
-                <div class="card-value">{{ targetCustomers }}</div>
-                <div class="card-trend positive">+8% 较上周</div>
-              </div>
-            </div>
-            <div class="overview-card">
-              <div class="card-icon">💰</div>
-              <div class="card-content">
-                <div class="card-title">营销转化率</div>
-                <div class="card-value">{{ conversionRate }}%</div>
-                <div class="card-trend positive">+5% 较上周</div>
-              </div>
-            </div>
-            <div class="overview-card">
-              <div class="card-icon">📈</div>
-              <div class="card-content">
-                <div class="card-title">营销收入</div>
-                <div class="card-value">¥{{ marketingRevenue }}</div>
-                <div class="card-trend positive">+15% 较上周</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 营销活动列表 -->
-        <div class="campaigns-section">
-          <div class="section-header">
-            <h2 class="section-title">营销活动</h2>
-            <div class="section-actions">
-              <el-select v-model="statusFilter" placeholder="活动状态" style="width: 120px">
-                <el-option label="全部" value="all" />
-                <el-option label="进行中" value="active" />
-                <el-option label="已结束" value="ended" />
-                <el-option label="草稿" value="draft" />
-              </el-select>
-              <el-date-picker
-                v-model="dateRange"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                style="width: 240px; margin-left: 12px"
-              />
-            </div>
-          </div>
-
-          <div class="campaigns-grid">
-            <div v-for="campaign in filteredCampaigns" :key="campaign.id" class="campaign-card">
-              <div class="campaign-header">
-                <div class="campaign-status" :class="campaign.status">{{ getStatusText(campaign.status) }}</div>
-                <el-dropdown trigger="click">
-                  <el-icon class="campaign-menu"><MoreFilled /></el-icon>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item @click="editCampaign(campaign)">编辑</el-dropdown-item>
-                      <el-dropdown-item @click="duplicateCampaign(campaign)">复制</el-dropdown-item>
-                      <el-dropdown-item @click="viewReport(campaign)">查看报告</el-dropdown-item>
-                      <el-dropdown-item divided @click="deleteCampaign(campaign)">删除</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-              <div class="campaign-content">
-                <h3 class="campaign-title">{{ campaign.title }}</h3>
-                <p class="campaign-description">{{ campaign.description }}</p>
-                <div class="campaign-meta">
-                  <div class="meta-item">
-                    <span class="meta-label">目标客户:</span>
-                    <span class="meta-value">{{ campaign.targetCount }}人</span>
-                  </div>
-                  <div class="meta-item">
-                    <span class="meta-label">预算:</span>
-                    <span class="meta-value">¥{{ campaign.budget }}</span>
-                  </div>
-                  <div class="meta-item">
-                    <span class="meta-label">时间:</span>
-                    <span class="meta-value">{{ formatDateRange(campaign.startDate, campaign.endDate) }}</span>
+            
+            <div class="audience-grid">
+              <div v-for="audience in audienceTypes" :key="audience.id" class="audience-card" @click="selectAudience(audience)">
+                <div class="audience-icon">{{ audience.icon }}</div>
+                <div class="audience-content">
+                  <h3 class="audience-title">{{ audience.title }}</h3>
+                  <p class="audience-desc">{{ audience.description }}</p>
+                  <div class="audience-stats">
+                    <span class="stat-item">预估人数: {{ audience.estimatedCount }}人</span>
                   </div>
                 </div>
-                <div class="campaign-stats">
-                  <div class="stat-item">
-                    <div class="stat-value">{{ campaign.impressions }}</div>
-                    <div class="stat-label">曝光量</div>
+                <div class="audience-action">
+                  <el-button size="small" type="primary" plain>立即投放</el-button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 营销场景 -->
+          <div class="marketing-section">
+            <div class="section-header">
+              <div class="section-icon">🎯</div>
+              <div class="section-info">
+                <h2 class="section-title">营销场景</h2>
+                <p class="section-desc">针对不同业务场景，提供专业的营销解决方案</p>
+              </div>
+              <el-button type="primary" @click="createScenarioMarketing">
+                立即投放
+              </el-button>
+            </div>
+            
+            <div class="scenario-grid">
+              <div v-for="scenario in scenarioTypes" :key="scenario.id" class="scenario-card" @click="selectScenario(scenario)">
+                <div class="scenario-icon">{{ scenario.icon }}</div>
+                <div class="scenario-content">
+                  <h3 class="scenario-title">{{ scenario.title }}</h3>
+                  <p class="scenario-desc">{{ scenario.description }}</p>
+                  <div class="scenario-features">
+                    <span v-for="feature in scenario.features" :key="feature" class="feature-tag">{{ feature }}</span>
                   </div>
-                  <div class="stat-item">
-                    <div class="stat-value">{{ campaign.clicks }}</div>
-                    <div class="stat-label">点击量</div>
-                  </div>
-                  <div class="stat-item">
-                    <div class="stat-value">{{ campaign.conversions }}</div>
-                    <div class="stat-label">转化量</div>
-                  </div>
-                  <div class="stat-item">
-                    <div class="stat-value">{{ (campaign.conversions / campaign.clicks * 100).toFixed(1) }}%</div>
-                    <div class="stat-label">转化率</div>
-                  </div>
+                </div>
+                <div class="scenario-action">
+                  <el-button size="small" type="primary" plain>立即投放</el-button>
                 </div>
               </div>
             </div>
@@ -229,7 +169,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Bell, QuestionFilled, ArrowDown, Search, ArrowRight, Plus, MoreFilled } from '@element-plus/icons-vue'
+import { Bell, QuestionFilled, ArrowDown, Search, ArrowRight } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
@@ -240,56 +180,109 @@ const route = useRoute()
 // 搜索关键词
 const searchKeyword = ref('')
 
-// 筛选条件
-const statusFilter = ref('all')
-const dateRange = ref([])
-
-// 概览数据
-const activeCampaigns = ref(8)
-const targetCustomers = ref(2456)
-const conversionRate = ref(12.5)
-const marketingRevenue = ref(45680)
-
-// 营销活动数据
-const campaigns = ref([
+// 人群营销数据
+const audienceTypes = ref([
   {
     id: 1,
-    title: '新用户专享优惠',
-    description: '针对新注册用户推送专属优惠券，提升首单转化率',
-    status: 'active',
-    targetCount: 1200,
-    budget: 5000,
-    startDate: '2024-01-15',
-    endDate: '2024-02-15',
-    impressions: 15680,
-    clicks: 2340,
-    conversions: 298
+    icon: '🔥',
+    title: '高消费熟客',
+    description: '最近3个月消费金额超过1000元的老客户',
+    estimatedCount: 1234
   },
   {
     id: 2,
-    title: '老客户回流活动',
-    description: '向30天未下单的老客户推送回流优惠',
-    status: 'active',
-    targetCount: 800,
-    budget: 3000,
-    startDate: '2024-01-20',
-    endDate: '2024-02-20',
-    impressions: 9800,
-    clicks: 1560,
-    conversions: 187
+    icon: '⭐',
+    title: '高点评熟客',
+    description: '给出5星好评且复购率高的优质客户',
+    estimatedCount: 856
   },
   {
     id: 3,
-    title: '高价值客户专享',
-    description: '为高消费客户提供专属服务和优惠',
-    status: 'ended',
-    targetCount: 300,
-    budget: 8000,
-    startDate: '2023-12-01',
-    endDate: '2023-12-31',
-    impressions: 4500,
-    clicks: 890,
-    conversions: 156
+    icon: '🎯',
+    title: '商圈点餐熟客',
+    description: '经常在商圈范围内点餐的常客',
+    estimatedCount: 2341
+  },
+  {
+    id: 4,
+    icon: '🍽️',
+    title: '商圈点餐新客',
+    description: '在商圈范围内的新用户群体',
+    estimatedCount: 1567
+  },
+  {
+    id: 5,
+    icon: '💤',
+    title: '低消费熟客',
+    description: '消费频次较低但有复购潜力的客户',
+    estimatedCount: 987
+  },
+  {
+    id: 6,
+    icon: '🔄',
+    title: '一般发展熟客',
+    description: '消费行为稳定的普通老客户',
+    estimatedCount: 3456
+  },
+  {
+    id: 7,
+    icon: '😴',
+    title: '昨日未下单新客',
+    description: '注册后尚未完成首单的新用户',
+    estimatedCount: 789
+  },
+  {
+    id: 8,
+    icon: '😞',
+    title: '不评价熟客',
+    description: '下单但很少给出评价的客户群体',
+    estimatedCount: 654
+  }
+])
+
+// 营销场景数据
+const scenarioTypes = ref([
+  {
+    id: 1,
+    icon: '🎁',
+    title: '勤丝顾客',
+    description: '针对高频消费客户的专属优惠活动',
+    features: ['专属折扣', '积分翻倍', '优先配送']
+  },
+  {
+    id: 2,
+    icon: '🌟',
+    title: '昨日未下单新客',
+    description: '激活新注册用户的首单转化',
+    features: ['新人专享', '首单立减', '免配送费']
+  },
+  {
+    id: 3,
+    icon: '🎯',
+    title: '好评顾客',
+    description: '奖励给出好评的优质客户',
+    features: ['好评返现', '专属优惠券', '会员升级']
+  },
+  {
+    id: 4,
+    icon: '💝',
+    title: '不评价顾客',
+    description: '鼓励客户参与评价的激励活动',
+    features: ['评价有礼', '积分奖励', '专属福利']
+  },
+  {
+    id: 5,
+    icon: '🔄',
+    title: '差评顾客',
+    description: '挽回差评客户的服务补偿方案',
+    features: ['服务补偿', '专人跟进', '品质保证']
+  },
+  {
+    id: 6,
+    icon: '🎪',
+    title: '不评价顾客',
+    description: '提升客户评价参与度的营销策略',
+    features: ['评价奖励', '互动游戏', '社交分享']
   }
 ])
 
@@ -375,6 +368,12 @@ const menuItems = ref([
         icon: '🎯',
         label: '精准营销',
         path: '/customers/precision-marketing'
+      },
+      {
+        id: 'customer-reviews',
+        icon: '💬',
+        label: '顾客评价',
+        path: '/customers/reviews'
       }
     ]
   },
@@ -416,17 +415,6 @@ const menuCollapsed = ref({
   customers: true // 默认展开顾客管理菜单
 })
 
-// 计算属性
-const filteredCampaigns = computed(() => {
-  let filtered = campaigns.value
-  
-  if (statusFilter.value !== 'all') {
-    filtered = filtered.filter(campaign => campaign.status === statusFilter.value)
-  }
-  
-  return filtered
-})
-
 // 方法
 const toggleMenu = (menuId) => {
   menuCollapsed.value[menuId] = !menuCollapsed.value[menuId]
@@ -451,37 +439,22 @@ const handleMenuClick = (path) => {
   }
 }
 
-const getStatusText = (status) => {
-  const statusMap = {
-    active: '进行中',
-    ended: '已结束',
-    draft: '草稿'
-  }
-  return statusMap[status] || status
+// 人群营销相关方法
+const createAudienceMarketing = () => {
+  ElMessage.info('创建人群营销活动功能开发中...')
 }
 
-const formatDateRange = (startDate, endDate) => {
-  return `${startDate} 至 ${endDate}`
+const selectAudience = (audience) => {
+  ElMessage.info(`选择人群: ${audience.title}`)
 }
 
-const createCampaign = () => {
-  ElMessage.info('创建营销活动功能开发中...')
+// 营销场景相关方法
+const createScenarioMarketing = () => {
+  ElMessage.info('创建营销场景活动功能开发中...')
 }
 
-const editCampaign = (campaign) => {
-  ElMessage.info(`编辑活动: ${campaign.title}`)
-}
-
-const duplicateCampaign = (campaign) => {
-  ElMessage.info(`复制活动: ${campaign.title}`)
-}
-
-const viewReport = (campaign) => {
-  ElMessage.info(`查看活动报告: ${campaign.title}`)
-}
-
-const deleteCampaign = (campaign) => {
-  ElMessage.warning(`删除活动: ${campaign.title}`)
+const selectScenario = (scenario) => {
+  ElMessage.info(`选择场景: ${scenario.title}`)
 }
 
 onMounted(() => {
@@ -852,146 +825,174 @@ onMounted(() => {
   color: #f56c6c;
 }
 
-/* 营销活动列表样式 */
-.campaigns-section {
+/* 营销类型样式 */
+.marketing-types {
+  padding: 0 20px;
+}
+
+.marketing-section {
   background: white;
   border-radius: 8px;
   padding: 24px;
+  margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 0 20px 20px 20px;
 }
 
 .section-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.section-icon {
+  font-size: 32px;
+  margin-right: 16px;
+}
+
+.section-info {
+  flex: 1;
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: #303133;
+  margin: 0 0 8px 0;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: #606266;
   margin: 0;
+  line-height: 1.5;
 }
 
-.section-actions {
-  display: flex;
-  align-items: center;
-}
-
-.campaigns-grid {
+/* 人群营销样式 */
+.audience-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
 }
 
-.campaign-card {
+.audience-card {
   border: 1px solid #e4e7ed;
   border-radius: 8px;
   padding: 20px;
+  cursor: pointer;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
 }
 
-.campaign-card:hover {
+.audience-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-color: #409eff;
+  transform: translateY(-2px);
 }
 
-.campaign-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+.audience-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  flex-shrink: 0;
 }
 
-.campaign-status {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
+.audience-content {
+  flex: 1;
+  margin-right: 16px;
 }
 
-.campaign-status.active {
-  background: #f0f9ff;
-  color: #409eff;
-}
-
-.campaign-status.ended {
-  background: #f5f7fa;
-  color: #909399;
-}
-
-.campaign-status.draft {
-  background: #fdf6ec;
-  color: #e6a23c;
-}
-
-.campaign-menu {
-  cursor: pointer;
-  color: #909399;
-  transition: color 0.3s;
-}
-
-.campaign-menu:hover {
-  color: #409eff;
-}
-
-.campaign-title {
+.audience-title {
   font-size: 16px;
   font-weight: 600;
   color: #303133;
   margin: 0 0 8px 0;
 }
 
-.campaign-description {
-  font-size: 14px;
-  color: #606266;
-  margin: 0 0 16px 0;
-  line-height: 1.5;
-}
-
-.campaign-meta {
-  margin-bottom: 16px;
-}
-
-.meta-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
+.audience-desc {
   font-size: 13px;
+  color: #606266;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
 }
 
-.meta-label {
+.audience-stats {
+  font-size: 12px;
   color: #909399;
 }
 
-.meta-value {
-  color: #303133;
-  font-weight: 500;
+.audience-action {
+  flex-shrink: 0;
 }
 
-.campaign-stats {
+/* 营销场景样式 */
+.scenario-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid #f0f2f5;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 16px;
 }
 
-.stat-item {
-  text-align: center;
+.scenario-card {
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: flex-start;
 }
 
-.stat-value {
+.scenario-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #409eff;
+  transform: translateY(-2px);
+}
+
+.scenario-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.scenario-content {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.scenario-title {
   font-size: 16px;
   font-weight: 600;
   color: #303133;
-  margin-bottom: 4px;
+  margin: 0 0 8px 0;
 }
 
-.stat-label {
-  font-size: 12px;
-  color: #909399;
+.scenario-desc {
+  font-size: 13px;
+  color: #606266;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.scenario-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.feature-tag {
+  background: #f0f9ff;
+  color: #409eff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #b3d8ff;
+}
+
+.scenario-action {
+  flex-shrink: 0;
+  margin-top: 4px;
 }
 </style>

@@ -32,6 +32,14 @@ const customersRoutes: RouteRecordRaw[] = [
     meta: {
       title: '精准营销'
     }
+  },
+  {
+    path: '/customers/reviews',
+    name: 'CustomerReviews',
+    component: () => import('../../pages/customers/reviews.vue'),
+    meta: {
+      title: '顾客评价'
+    }
   }
 ]
 
