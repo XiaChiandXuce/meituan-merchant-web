@@ -81,8 +81,14 @@ const menuItems = ref([
         path: '/customers/analysis'
       },
       {
-        id: 'customer-list',
+        id: 'customer-profile',
         icon: '👤',
+        label: '顾客画像',
+        path: '/customers/profile'
+      },
+      {
+        id: 'customer-list',
+        icon: '📋',
         label: '顾客列表',
         path: '/customers/list'
       },
@@ -91,6 +97,12 @@ const menuItems = ref([
         icon: '🏷️',
         label: '顾客标签',
         path: '/customers/tags'
+      },
+      {
+        id: 'customer-profile',
+        icon: '👥',
+        label: '顾客画像',
+        path: '/customers/profile'
       }
     ]
   },
@@ -327,6 +339,12 @@ onMounted(() => {
               <div class="action-icon">🏷️</div>
               <div class="action-title">顾客标签</div>
               <div class="action-desc">设置和管理顾客标签</div>
+            </div>
+            
+            <div class="action-card" @click="handleMenuClick('/customers/profile')">
+              <div class="action-icon">👥</div>
+              <div class="action-title">顾客画像</div>
+              <div class="action-desc">分析顾客特征和行为偏好</div>
             </div>
           </div>
         </div>

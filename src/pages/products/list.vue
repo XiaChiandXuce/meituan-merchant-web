@@ -370,7 +370,31 @@ const menuItems = ref([
     icon: '👥',
     label: '顾客管理',
     badge: '新',
-    path: '/customers'
+    isParent: true,
+    children: [
+      {
+        id: 'customer-analysis',
+        label: '顾客分析',
+        path: '/customers/analysis'
+      },
+      {
+        id: 'customer-profile',
+        icon: '👤',
+        label: '顾客画像',
+        path: '/customers/profile'
+      },
+      {
+        id: 'customer-list',
+        icon: '📋',
+        label: '顾客列表',
+        path: '/customers'
+      },
+      {
+        id: 'customer-tags',
+        label: '顾客标签',
+        path: '/customers/tags'
+      }
+    ]
   },
   {
     id: 'finance',

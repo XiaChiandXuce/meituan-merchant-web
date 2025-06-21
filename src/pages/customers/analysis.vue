@@ -85,8 +85,14 @@ const menuItems = ref([
         path: '/customers/analysis'
       },
       {
-        id: 'customer-list',
+        id: 'customer-profile',
         icon: '👤',
+        label: '顾客画像',
+        path: '/customers/profile'
+      },
+      {
+        id: 'customer-list',
+        icon: '📋',
         label: '顾客列表',
         path: '/customers/list'
       },

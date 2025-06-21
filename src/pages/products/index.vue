@@ -674,6 +674,7 @@ onMounted(() => {
 .menu-label {
   flex: 1;
   font-size: 14px;
+  text-align: left;
 }
 
 .menu-count {

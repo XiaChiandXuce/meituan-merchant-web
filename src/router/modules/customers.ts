@@ -16,6 +16,14 @@ const customersRoutes: RouteRecordRaw[] = [
     meta: {
       title: '顾客分析'
     }
+  },
+  {
+    path: '/customers/profile',
+    name: 'CustomerProfile',
+    component: () => import('../../pages/customers/profile.vue'),
+    meta: {
+      title: '顾客画像'
+    }
   }
 ]
 
