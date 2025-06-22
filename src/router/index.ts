@@ -7,6 +7,7 @@ import dashboardRoutes from './modules/dashboard'
 import ordersRoutes from './modules/orders'
 import productsRoutes from './modules/products'
 import customersRoutes from './modules/customers'
+import financeRoutes from './modules/finance'
 import analyticsRoutes from './modules/analytics'
 
 // 合并所有路由
@@ -17,6 +18,7 @@ const routes: RouteRecordRaw[] = [
     ...ordersRoutes,
     ...productsRoutes,
     ...customersRoutes,
+    ...financeRoutes,
     ...analyticsRoutes,
 ]
 

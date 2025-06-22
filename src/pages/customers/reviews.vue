@@ -432,6 +432,12 @@ const menuItems = ref([
     isParent: true,
     children: [
       {
+        id: 'reconciliation',
+        icon: '🔍',
+        label: '对账首页',
+        path: '/finance/reconciliation'
+      },
+      {
         id: 'revenue',
         icon: '📈',
         label: '营收统计',
